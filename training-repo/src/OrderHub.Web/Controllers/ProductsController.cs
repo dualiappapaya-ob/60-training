@@ -31,5 +31,29 @@ public class ProductsController : Controller
 
         return View(vm);
     }
+
+    public async Task<IActionResult> LowStock(int? threshold)
+    {
+        var effectiveThreshold = threshold ?? 10;
+        var vm = new LowStockViewModel { Threshold = effectiveThreshold };
+
+        if (effectiveThreshold <= 0)
+        {
+            ModelState.AddModelError(nameof(vm.Threshold), "門檻必須大於 0");
+            return View(vm);
+        }
+
+        var items = await _productService.GetLowStockAsync(effectiveThreshold);
+
+        vm.Products = items.Select(i => new LowStockProductRowViewModel
+        {
+            Sku = i.Product.Sku,
+            Name = i.Product.Name,
+            StockQuantity = i.Product.StockQuantity,
+            SoldLast30Days = i.SoldLast30Days
+        }).ToList();
+
+        return View(vm);
+    }
 }
 
