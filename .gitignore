@@ -23,4 +23,4 @@ node_modules/
 *.local.md
 
 # Claude Code hook-generated logs
-.claude/hooks/edit-log.txt
+**/.claude/hooks/edit-log.txt
